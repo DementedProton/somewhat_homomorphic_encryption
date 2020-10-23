@@ -20,9 +20,6 @@ def Encrypt(params: dict, plaintext_m: int) -> int:
     random_integer_r = random.randint(-(2**rho), (2**rho)) # random r←(−2^(2ρ),2^(2ρ))
     # c=(m+ 2r+ 2∑xi, i∈S ) mod x0
     ciphertext_c = plaintext_m + 2 * random_integer_r + 2 * sum(public_key[_] for _ in random_subset_S) % public_key[0]
-    # calculating modulus
-    # quotient = int(round(float(ciphertext_c)/public_key[0]))
-    # ciphertext_c = ciphertext_c - quotient * public_key[0]
     return ciphertext_c
 
 
@@ -33,25 +30,26 @@ def Decrypt(secret_key: int, ciphertext_c: int) -> int:
     :param ciphertext_c: ciphertext c integer
     :return: plaintext_m integer
     """
-    # quotient = int(round(float(ciphertext_c)/secret_key))
-    # plaintext_m = ciphertext_c - quotient * secret_key
-    # plaintext_m = plaintext_m % 2
     plaintext_m = (ciphertext_c % secret_key) % 2
     return plaintext_m
 
 
 if __name__ == '__main__':
-    with open('swhe-task1.json') as file:
+    with open('swhe-task1.json', "r") as file:
         params = json.load(file)
-        vector = params['Plaintext Vector']
-        secret_key = int(params['SWHE']['sk'])
-        encrypted_vector = []
-        decrypted_vector = []
-        for i in vector:
-            encrypted_vector.append(Encrypt(params, i))
-        for i in encrypted_vector:
-            decrypted_vector.append(Decrypt(secret_key, i))
-        print(encrypted_vector)
-        print(vector)
-        print(decrypted_vector)
+    vector = params['Plaintext Vector']
+    secret_key = int(params['SWHE']['sk'])
+    encrypted_vector = []
+    decrypted_vector = []
+    for i in vector:
+        encrypted_vector.append(Encrypt(params, i))
+    for i in encrypted_vector:
+        decrypted_vector.append(Decrypt(secret_key, i))
+    params['Encrypted Vector'] = [str(_) for _ in encrypted_vector]
+    with open('swhe-task1_vector.json', "w") as file:
+        json.dump(params, file)
+
+        # print(encrypted_vector)
+        # print(vector)
+        # print(decrypted_vector)
 
