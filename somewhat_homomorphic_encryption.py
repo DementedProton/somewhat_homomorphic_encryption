@@ -45,7 +45,7 @@ if __name__ == '__main__':
         encrypted_vector.append(Encrypt(params, i))
     for i in encrypted_vector:
         decrypted_vector.append(Decrypt(secret_key, i))
-    params['Encrypted Vector'] = [str(_) for _ in encrypted_vector]
+    params['Encrypted Vector'] = encrypted_vector
     with open('swhe-task1_vector.json', "w") as file:
         json.dump(params, file)
 
