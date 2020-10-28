@@ -13,17 +13,22 @@ if __name__ == '__main__':
     ciphertext_vector = params['Ciphertext Collection']
     secret_key = int(params['SWHE']['sk'])
     decrypted_vector = {}
+    public_key = [int(_) for _ in params['SWHE']['Public Parameters']['pk']]
+    x0 = public_key[0]
     for i in ciphertext_vector:
         noise_bit_length = i["Noise Bitlength"]
         ciphertext = int(i["Ciphertext"])
         c_add = 0
         c_mult = 1
-        n_addition =0 # count smallest n for which addition/multiplication followed by decryption fails
-        n_multiplication = 0 #
+        n_addition = 0  # count smallest n for which addition/multiplication followed by decryption fails
+        n_multiplication = 0
         decrypted_vector[noise_bit_length] = []
         while True:
             c_add = c_add + ciphertext
-            if Decrypt(secret_key, ciphertext) == 0:
+            # find c_add mod x0
+            quotient = c_add / x0
+            c_add = c_add - int(quotient * x0)
+            if Decrypt(secret_key, c_add) == 0:
                 n_addition += 1
                 continue
             else:
@@ -31,13 +36,16 @@ if __name__ == '__main__':
                 break
         while True:
             c_mult = c_mult * ciphertext
-            if Decrypt(secret_key, ciphertext) == 0:
+            # find c_mult mod x0
+            quotient = c_mult / x0
+            c_mult = c_mult - int(quotient * x0)
+            if Decrypt(secret_key, c_mult) == 0:
                 n_multiplication += 1
                 continue
             else:
                 decrypted_vector[noise_bit_length].append({'and': n_multiplication})
                 break
         print(decrypted_vector)
-    with open('noise_stats_op.json', "r") as ofile:
+    with open('noise_stats_op.json', "w") as ofile:
         json.dump(decrypted_vector, ofile )
 
