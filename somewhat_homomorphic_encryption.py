@@ -1,7 +1,6 @@
 import json
 import random
 from math import ceil, floor
-from gmpy2 import t_mod, f_div
 
 
 def Encrypt(params: dict, plaintext_m: int) -> int:
