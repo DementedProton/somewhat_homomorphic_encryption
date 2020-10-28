@@ -1,5 +1,7 @@
 import json
 import random
+from math import ceil, floor
+from gmpy2 import t_mod, f_div
 
 
 def Encrypt(params: dict, plaintext_m: int) -> int:
@@ -17,11 +19,18 @@ def Encrypt(params: dict, plaintext_m: int) -> int:
     public_key = [int(_) for _ in params['SWHE']['Public Parameters']['pk']]
     # Random subset S calculated from {1, τ}
     random_subset_S = [_ for _ in range(1, tau+1) if bool(round(random.random()))] # 0 to 10, 11 elements totally
-    random_integer_r = random.randint(-(2**rho)+1, (2**rho)-1) # random r←(−2^(2ρ),2^(2ρ))
+    random_integer_r = random.randint(-(2**(2*rho))+1, (2**(2*rho))-1) # random r←(−2^(2ρ),2^(2ρ))
     # c=(m+ 2r+ 2∑xi, i∈S ) mod x0
     ciphertext_c = (plaintext_m + 2 * random_integer_r + 2 * sum(public_key[_] for _ in random_subset_S)) # % public_key[0]
-    quotient = int(round(float(ciphertext_c) / public_key[0]))
-    ciphertext_c = ciphertext_c - quotient * public_key[0]
+     #ciphertext_c1 = (plaintext_m + 2 * random_integer_r + 2 * sum(public_key[_] for _ in random_subset_S)) % public_key[0]
+    quotient = ciphertext_c / public_key[0]
+    # if quotient - 0.5 < floor(quotient):
+    #     quotient = floor(quotient)
+    # else:
+    #     quotient = ceil(quotient)
+    # ciphertext_c2 = ciphertext_c % public_key[0]
+    ciphertext_c = ciphertext_c - int(quotient * public_key[0])
+
     return ciphertext_c
 
 
@@ -32,10 +41,17 @@ def Decrypt(secret_key: int, ciphertext_c: int) -> int:
     :param ciphertext_c: ciphertext c integer
     :return: plaintext_m integer
     """
-    #plaintext_m = (ciphertext_c % secret_key)
-    quotient = int(round(float(ciphertext_c) / secret_key))
-    plaintext_m = ciphertext_c - quotient * secret_key
-    plaintext_m = plaintext_m % 2
+    # plaintext_m = (ciphertext_c % secret_key) % 2
+    quotient = ciphertext_c / secret_key
+    # f = (ciphertext_c % secret_key) / secret_key
+    # if f > 0.5:
+    #     quotient = quotient - 1
+    if quotient - 0.5 < floor(quotient):
+        quotient = floor(quotient)
+    else:
+        quotient = ceil(quotient)
+    plaintext_m = (ciphertext_c % 2 + quotient % 2) % 2 # secret_key
+    # plaintext_m = plaintext_m % 2
     return plaintext_m
 
 
