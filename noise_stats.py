@@ -26,8 +26,9 @@ if __name__ == '__main__':
         while True:
             c_add = c_add + ciphertext
             # find c_add mod x0
-            quotient = c_add / x0
-            c_add = c_add - int(quotient * x0)
+            # quotient = c_add / x0
+            # c_add = c_add - int(quotient * x0)
+            c_add = c_add % x0
             if Decrypt(secret_key, c_add) == 0:
                 n_addition += 1
                 continue
@@ -37,8 +38,9 @@ if __name__ == '__main__':
         while True:
             c_mult = c_mult * ciphertext
             # find c_mult mod x0
-            quotient = c_mult / x0
-            c_mult = c_mult - int(quotient * x0)
+            # quotient = c_mult / x0
+            # c_mult = c_mult - int(quotient * x0)
+            c_mult = c_mult % x0
             if Decrypt(secret_key, c_mult) == 0:
                 n_multiplication += 1
                 continue
