@@ -28,7 +28,6 @@ if __name__ == '__main__':
                 continue
             else:
                 decrypted_vector[noise_bit_length].append({'xor': n_addition})
-                print(decrypted_vector)
                 break
         while True:
             c_mult = c_mult * ciphertext
@@ -38,7 +37,7 @@ if __name__ == '__main__':
             else:
                 decrypted_vector[noise_bit_length].append({'and': n_multiplication})
                 break
-    print(decrypted_vector)
+        print(decrypted_vector)
     with open('noise_stats_op.json', "r") as ofile:
         json.dump(decrypted_vector, ofile )
 
