@@ -68,7 +68,8 @@ if __name__ == '__main__':
     params['Encrypted Vector'] = encrypted_vector
     #with open('swhe-task1_vector.json', "w") as file:
         #json.dump(params, file)
-    print("Encrypted Vector: ", encrypted_vector)
-    print("Plaintext Vector:" , vector)
+    # print("Encrypted Vector: ", encrypted_vector)
+    print("Encrypted Vector written to the JSON file.")
+    print("Plaintext Vector:", vector)
     print("Decrypted Vector:", decrypted_vector)
 
