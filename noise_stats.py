@@ -2,11 +2,6 @@ import json
 from somewhat_homomorphic_encryption import Decrypt
 import pdb
 
-
-# xor - addition mod 2 - here
-#and - mulitplication
-#
-#
 if __name__ == '__main__':
     with open('swhe-task2.json', "r") as file:
         params = json.load(file)
@@ -25,9 +20,6 @@ if __name__ == '__main__':
         decrypted_vector[noise_bit_length] = []
         while True:
             c_add = c_add + ciphertext
-            # find c_add mod x0
-            # quotient = c_add / x0
-            # c_add = c_add - int(quotient * x0)
             c_add = c_add % x0
             if Decrypt(secret_key, c_add) == 0:
                 n_addition += 1
@@ -37,9 +29,6 @@ if __name__ == '__main__':
                 break
         while True:
             c_mult = c_mult * ciphertext
-            # find c_mult mod x0
-            # quotient = c_mult / x0
-            # c_mult = c_mult - int(quotient * x0)
             c_mult = c_mult % x0
             if Decrypt(secret_key, c_mult) == 0:
                 n_multiplication += 1
@@ -48,6 +37,7 @@ if __name__ == '__main__':
                 decrypted_vector[noise_bit_length].append({'and': n_multiplication})
                 break
         print(decrypted_vector)
+
     with open('noise_stats_op.json', "w") as ofile:
         json.dump(decrypted_vector, ofile )
 
